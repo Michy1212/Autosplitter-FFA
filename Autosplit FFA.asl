@@ -17,7 +17,7 @@ startup {
     settings.Add("magic",     false, "Magic spells");
     settings.Add("equipment", false, "Equipment");
     settings.Add("boss",      false, "Boss");
-    settings.Add("any",      false, "Any%");
+    settings.Add("any",       false, "Any%");
 
     settings.CurrentDefaultParent = "boss";
 	settings.Add("cat1",         false,  "Defeat Cat 1");
