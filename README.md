@@ -1,26 +1,32 @@
 This autosplit only works with Gambatte (r717 other) and BGB emulator.
 
+
 Start
 
 Timer will start when the girl is named.
 
+
 Reset the timer
 
 You must be on the title screen to reset the timer.
+
 
 Boss
 
 Splits will be made when the designed boss loose all of its HP (start of the explosion).
 The splits will work by looking at the boss' HP (if decrease from a value different to 0 and going to 0), if the rooms ID are corrects and depending on some other conditions (ex: partner).
 
+
 Magic spells
 
 Splits will be made when the spell appears in the inventory.
+
 
 Locations
 
 Splits will be made during the transition.
 Dime Tower : Split will be made when the Hero land after Marcie throw him.
+
 
 Events
 
