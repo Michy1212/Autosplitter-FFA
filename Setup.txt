@@ -1,7 +1,0 @@
-This autosplit only works with Gambatte and BGB emulator.
-
-To make it work, you must open the emulator and load the proper ROM then open LiveSplit.
-
-To make it available in LiveSplit, you must add the "Scriptable Auto Splitter" in your layout (in the "Control section").
-
-In the "Scriptable Auto Splitter" section, indicate the location of the autosplit file (ASL format). Now, the possible splits might appears. Check the boxes of the desired splits.
