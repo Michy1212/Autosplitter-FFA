@@ -1,3 +1,5 @@
+This autosplit only works with Gambatte (r717 other) and BGB emulator.
+
 Start
 Timer will start when the girl is named.
 
@@ -13,6 +15,7 @@ Splits will be made when the spell appears in the inventory.
 
 Locations
 Splits will be made during the transition.
+Dime Tower : Split will be made when the Hero land after Marcie throw him.
 
 Events
 Kett's : Split will be made when going to sleep with fuji (first transition before she gives the Cure magic).

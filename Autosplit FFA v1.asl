@@ -8,6 +8,7 @@ state("gambatte") {}
 state("gambatte_qt") {}
 state("gambatte_qt_nonpsr") {}
 state("gambatte_speedrun") {}
+state("gambatte_speedrun_other") {}
 state("emuhawk") {}
 
 startup {
@@ -16,6 +17,7 @@ startup {
     settings.Add("magic",     false, "Magic spells");
     settings.Add("equipment", false, "Equipment");
     settings.Add("boss",      false, "Boss");
+    settings.Add("any",      false, "Any%");
 
     settings.CurrentDefaultParent = "boss";
 	settings.Add("cat1",         false,  "Defeat Cat 1");
@@ -48,20 +50,21 @@ startup {
     settings.Add("recover mana", true,  "Recover Mana");
 
     settings.CurrentDefaultParent = "location";
-	settings.Add("marsh cave",     true,  "Exit Marsh Cave");
-    settings.Add("ketts dungeon",  true,  "Exit Kett's Dungeon");
-    settings.Add("silver mine",    false,  "Exit Silver Mine");
-    settings.Add("gaia",           true,  "Exit Gaia");
-    settings.Add("airship",        true,  "Exit Airship");
-    settings.Add("medusa cave",    true,  "Exit Medusa cave");
-    settings.Add("davias mansion", true,  "Exit Davias' Mansion");
-    settings.Add("mt rocks",       true,  "Exit Cave of Mt. Rocks");
-    settings.Add("glaive castle",  false,  "Exit Glaive Castle");
-    settings.Add("ice cavern",     true,  "Exit Ice Cavern");
-    settings.Add("floatrocks",     true,  "Exit Cave of Floatrocks");
-    settings.Add("palmy desert",   true,  "Exit Cave of Palmy Desert");
-    settings.Add("dime tower",     true,  "Exit Dime Tower");
-    settings.Add("temple of mana", true,  "Exit Temple of Mana");
+	settings.Add("marsh cave",         true,  "Exit Marsh Cave");
+    settings.Add("ketts dungeon",      true,  "Exit Kett's Dungeon");
+    settings.Add("silver mine",        false,  "Exit Silver Mine");
+    settings.Add("gaia",               true,  "Exit Gaia");
+    settings.Add("airship",            true,  "Exit Airship");
+    settings.Add("medusa cave",        true,  "Exit Medusa cave");
+    settings.Add("davias mansion",     true,  "Exit Davias' Mansion");
+    settings.Add("mt rocks",           true,  "Exit Cave of Mt. Rocks");
+    settings.Add("glaive castle",      false,  "Exit Glaive Castle");
+    settings.Add("ice cavern",         true,  "Exit Ice Cavern");
+    settings.Add("floatrocks",         true,  "Exit Cave of Floatrocks");
+    settings.Add("palmy desert",       true,  "Exit Cave of Palmy Desert");
+    settings.Add("dime tower",         true,  "Exit Dime Tower");
+    settings.Add("temple of mana",     true,  "Exit Temple of Mana");
+    settings.Add("access final fight", false,  "Access Final Fight");
 
     settings.CurrentDefaultParent = "magic";
 	settings.Add("magic cure",    false,  "Cure");
@@ -79,6 +82,12 @@ startup {
     settings.Add("ice sword",    false,  "Ice sword");
     settings.Add("rusty sword",  false,  "Rusty sword");
     settings.Add("excalibur",    false,  "Excalibur");
+
+    settings.CurrentDefaultParent = "any";
+    settings.Add("axe shop",            false,  "Axe shop");
+    settings.Add("zip ish",             false,  "Zip to Ish");
+    settings.Add("snowmanless glaive",  false,  "Snowmanless to Glaive Castle");
+    settings.Add("zip floatrocks",      false,  "Zip to Cave of Floatrocks");
 
     refreshRate = 0.5;
 
@@ -142,6 +151,9 @@ startup {
 
     vars.GetWatcherList = (Func<int, MemoryWatcherList>)((wramOffset) => {
         return new MemoryWatcherList {
+            new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x0021)) { Name = "x_heros"},
+            new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x0020)) { Name = "y_heros"},
+            new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x00A6)) { Name = "x_camera"},
 			new MemoryWatcher<ushort>(new DeepPointer(wramOffset +  0x13F4)) { Name = "boss_HP" },
             new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x03FE)) { Name = "id_room_1" },
             new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x0401)) { Name = "id_room_2" },
@@ -390,7 +402,7 @@ startup {
                 (
                 vars.watchers["id_room_1"].Current == 0x36 &&
                 vars.watchers["id_room_2"].Current == 0x50 &&
-                vars.watchers["boss_HP"].Current == 0xFFFF &&
+                vars.watchers["boss_HP"].Current > 0xF000 &&
                 vars.GoldIncrease == true)
             },
 
@@ -471,14 +483,23 @@ startup {
             { 
                 "dime tower", 
                 (vars.watchers["nuke"].Current == 0x01 &&
-                vars.watchers["id_room_1"].Current == 0x94 && 
-                vars.watchers["id_room_2"].Current == 0x56)
+                vars.watchers["id_room_1"].Current == 0x76 && 
+                vars.watchers["id_room_2"].Current == 0x14 &&
+                vars.watchers["x_heros"].Current == 0x68 &&
+                vars.watchers["y_heros"].Current == 0x50 &&
+                vars.watchers["x_camera"].Current == 0xC0)
             },
             { 
                 "temple of mana", 
                 (vars.watchers["id_room_1"].Current == 0xF3 && 
                 vars.watchers["id_room_2"].Current == 0x75) 
             },
+            { 
+                "access final fight", 
+                (vars.watchers["id_room_1"].Current == 0x36 && 
+                vars.watchers["id_room_2"].Current == 0x50) 
+            },
+
 
             // Magic
             { 
@@ -534,6 +555,34 @@ startup {
             { 
                 "excalibur", 
                 (vars.HasEquipValue(0x55, 0x10) == true) 
+            },
+
+            // Any%
+            { 
+                "axe shop", 
+                (vars.previousid_room_1 == 0x10 && 
+                vars.previousid_room_2 == 0xC7 && 
+                vars.watchers["id_room_1"].Current == 0xBB && 
+                vars.watchers["id_room_2"].Current == 0x00) 
+            },
+            { 
+                "zip ish", 
+                (vars.previousid_room_1 == 0x72 && 
+                vars.previousid_room_2 == 0x76 && 
+                vars.watchers["id_room_1"].Current == 0xC6 && 
+                vars.watchers["id_room_2"].Current == 0x61)
+            },
+            { 
+                "snowmanless glaive", 
+                (vars.previousid_room_1 == 0xA5 && 
+                vars.previousid_room_2 == 0x37 && 
+                vars.watchers["id_room_1"].Current == 0xAB && 
+                vars.watchers["id_room_2"].Current == 0x30)
+            },
+            { 
+                "zip floatrocks", 
+                (vars.watchers["id_room_1"].Current == 0xC6 && 
+                vars.watchers["id_room_2"].Current == 0x31)
             },
         };
     });
