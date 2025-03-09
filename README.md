@@ -1,9 +1,11 @@
 This autosplit only works with Gambatte (r717 other) and BGB emulator.
 
 
+
 Start
 
 Timer will start when the girl is named.
+
 
 
 Locations
@@ -11,6 +13,7 @@ Locations
 Splits will be made during the transition.
 
 Dime Tower : Split will be made when the Hero land after Marcie throw him.
+
 
 
 Events
@@ -22,9 +25,11 @@ Chocobot : Split will be made when going out after speeking to Dr. Bowow.
 Recover Mana : Split will be made when the gold increase after defeating Julius 3.
 
 
+
 Magic spells
 
 Splits will be made when the spell appears in the inventory.
+
 
 
 Boss
