@@ -624,6 +624,7 @@ init {
 update {
     int currentBossHP = vars.watchers["boss_HP"].Current;
     int currentGold = vars.watchers["gold"].Current;
+    int currentFujiName = vars.watchers["start"].Current;
     int currentid_room_1 = vars.watchers["id_room_1"].Current;
     int currentid_room_2 = vars.watchers["id_room_2"].Current;
     bool HasGoldIncrease = false;
@@ -638,6 +639,7 @@ update {
     vars.watchers.UpdateAll(game);
     vars.previousBossHP = currentBossHP;
     vars.previousGold = currentGold;
+    vars.previousFujiName = currentFujiName;
     vars.previousid_room_1 = currentid_room_1;
     vars.previousid_room_2 = currentid_room_2;
 
@@ -651,7 +653,7 @@ update {
 }
 
 start {
-    return vars.watchers["start"].Current != 0x00 && vars.watchers["start"].Current != 0xFF;
+    return vars.watchers["start"].Current != 0x00 && vars.watchers["start"].Current != 0xFF && (vars.previousFujiName == 0x00 || vars.previousFujiName == 0xFF);
 }
 
 split {
