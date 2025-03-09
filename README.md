@@ -6,16 +6,6 @@ Start
 Timer will start when the girl is named.
 
 
-Reset the timer
-
-You must be on the title screen to reset the timer.
-
-
-Magic spells
-
-Splits will be made when the spell appears in the inventory.
-
-
 Locations
 
 Splits will be made during the transition.
@@ -27,6 +17,11 @@ Events
 Kett's : Split will be made when going to sleep with fuji (first transition before she gives the Cure magic).
 Chocobot : Split will be made when going out after speeking to Dr. Bowow.
 Recover Mana : Split will be made when the gold increase after defeating Julius 3.
+
+
+Magic spells
+
+Splits will be made when the spell appears in the inventory.
 
 
 Boss
