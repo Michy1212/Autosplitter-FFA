@@ -28,3 +28,8 @@ Boss
 
 - Splits will be made when the designed boss loose all of its HP (start of the explosion).
 - The splits will work by looking at the boss' HP (if decrease from a value different to 0 and going to 0), if the rooms ID are corrects and depending on some other conditions (ex: partner).
+
+Any%
+
+- The Drôle Menu split will be made when trigerring the transition to the screen before Xcalibur
+- Flee Julius 2 will occurs when living the screen except if you live at the top
