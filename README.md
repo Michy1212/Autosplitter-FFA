@@ -31,5 +31,5 @@ Boss
 
 Any%
 
-- The Drôle Menu split will be made when trigerring the transition to the screen before Xcalibur
-- Flee Julius 2 will occurs when living the screen except if you live at the top
+- The Drôle Menu split will be made when trigerring the transition to the screen before Xcalibur.
+- Flee Julius 2 will occurs when living the screen except if you live at the top.
