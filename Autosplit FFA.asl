@@ -9,15 +9,17 @@ state("gambatte_qt") {}
 state("gambatte_qt_nonpsr") {}
 state("gambatte_speedrun") {}
 state("gambatte_speedrun_other") {}
+state("GSE") {}
 state("emuhawk") {}
 
 startup {
     settings.Add("event",     true, "Event");
     settings.Add("location",  true, "Location");
     settings.Add("magic",     false, "Magic spells");
-    settings.Add("equipment", false, "Equipment");
+    settings.Add("equipment", false, "Equipments & Items");
     settings.Add("boss",      false, "Boss");
     settings.Add("any",       false, "Any%");
+    settings.Add("any_no_dm", false, "Any% (no DM)");
 
     settings.CurrentDefaultParent = "boss";
 	settings.Add("cat1",         false,  "Defeat Cat 1");
@@ -77,6 +79,9 @@ startup {
     settings.Add("magic nuke",    false,  "Nuke");
 
     settings.CurrentDefaultParent = "equipment";
+    settings.Add("mattok",       false,  "Mattock");
+    settings.Add("bronze",       false,  "Bronze key");
+    settings.Add("sickle",       false,  "Sickle");
     settings.Add("silver armor", false,  "Silver Armor");
 	settings.Add("star",         false,  "Star");
     settings.Add("ice sword",    false,  "Ice sword");
@@ -84,11 +89,17 @@ startup {
     settings.Add("excalibur",    false,  "Excalibur");
 
     settings.CurrentDefaultParent = "any";
+    settings.Add("zip ice",    false,  "Zip to Ice Cavern");
+    settings.Add("zip mine", false,  "Zip to Silver Mine");
+    settings.Add("drole menu",  false,  "Drôle Menu");
+    settings.Add("flee julius 2",  false,  "Flee Julius 2");
+
+    settings.CurrentDefaultParent = "any_no_dm";
     settings.Add("axe shop",            false,  "Axe shop");
     settings.Add("zip ish",             false,  "Zip to Ish");
     settings.Add("snowmanless glaive",  false,  "Snowmanless to Glaive Castle");
     settings.Add("zip floatrocks",      false,  "Zip to Cave of Floatrocks");
-
+    
     refreshRate = 0.5;
 
     vars.TryFindOffsets = (Func<Process, long, bool>)((proc, baseAddress) => {
@@ -98,6 +109,11 @@ startup {
             IntPtr scanOffset = vars.SigScan(proc, 0, "53 45 49 4B 45 4E 20 44 45 4E 53 45 54 53 55 00 00 00 00");
             print("[Debug] scanOffset: " + scanOffset.ToString("X8"));
             wramOffset = (long)scanOffset + 0x45ECC;
+            print("[Debug] WRAM Offset trouvé : " + wramOffset.ToString("X8"));
+        }else if (state.Contains("gse")) {
+            IntPtr scanOffset = vars.SigScan(proc, 0, "7F 4D 65 58 58 7F 62 59 7F 46 54 61 54 7F 5A 65 62 6A 66");
+            print("[Debug] scanOffset: " + scanOffset.ToString("X8"));
+            wramOffset = (long)scanOffset + 0x4540;
             print("[Debug] WRAM Offset trouvé : " + wramOffset.ToString("X8"));
         } else if (state == "emuhawk") {
             IntPtr scanOffset = vars.SigScan(proc, 0, "05 00 00 00 ?? 00 00 00 00 ?? ?? 00 ?? 40 ?? 00 00 ?? ?? 00 00 00 00 00 ?? 00 00 00 00 00 00 00 00 00 00 00 ?? ?? ?? 00 ?? 00 00 00 00 00 ?? 00 ?? 00 00 00 00 00 00 00 ?? ?? ?? ?? ?? ?? 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 00 00 00");
@@ -537,6 +553,18 @@ startup {
 
             // Equipment
             { 
+                "mattok", 
+                (vars.HasItemValue(0xB6) == true) 
+            },
+            { 
+                "bronze", 
+                (vars.HasItemValue(0x19) == true) 
+            },
+            { 
+                "sickle", 
+                (vars.HasEquipValue(0x09, 0x03) == true) 
+            },
+            { 
                 "silver armor", 
                 (vars.HasEquipValue(0x0A, 0x13) == true) 
             },
@@ -558,6 +586,41 @@ startup {
             },
 
             // Any%
+            { 
+                "zip ice", 
+                (vars.previousid_room_1 == 0xDD && 
+                vars.previousid_room_2 == 0x41 && 
+                vars.watchers["id_room_1"].Current == 0x06 && 
+                vars.watchers["id_room_2"].Current == 0x42) 
+            },
+            { 
+                "zip mine", 
+                (vars.previousid_room_1 == 0x6E && 
+                vars.previousid_room_2 == 0x44 && 
+                vars.watchers["id_room_1"].Current == 0x88 && 
+                vars.watchers["id_room_2"].Current == 0x45)
+            },
+            { 
+                "drole menu", 
+                (vars.previousid_room_1 == 0xDE && 
+                vars.previousid_room_2 == 0x72 && 
+                vars.watchers["id_room_1"].Current == 0xF1 && 
+                vars.watchers["id_room_2"].Current == 0x73)
+            },
+            { 
+                "flee julius 2", 
+                (
+                    vars.previousid_room_1 == 0x8F && 
+                    vars.previousid_room_2 == 0x67 && 
+                    (
+                        (vars.watchers["id_room_1"].Current == 0x78 && vars.watchers["id_room_2"].Current == 0x60) ||
+                        (vars.watchers["id_room_1"].Current == 0x63 && vars.watchers["id_room_2"].Current == 0x57) ||
+                        (vars.watchers["id_room_1"].Current == 0xD0 && vars.watchers["id_room_2"].Current == 0x77)
+                    )
+                )
+            },
+
+            // Any% (no DM)
             { 
                 "axe shop", 
                 (vars.previousid_room_1 == 0x10 && 
