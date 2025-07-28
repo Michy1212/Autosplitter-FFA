@@ -1,5 +1,5 @@
 // Autosplit for Final Fantasy Adventure
-// Version 1
+// Version 5
 // Written by Michy1212 from Le Retroscope
 
 state("bgb") {}
@@ -18,8 +18,9 @@ startup {
     settings.Add("magic",     false, "Magic spells");
     settings.Add("equipment", false, "Equipments & Items");
     settings.Add("boss",      false, "Boss");
-    settings.Add("any",       false, "Any%");
-    settings.Add("any_no_dm", false, "Any% (no DM)");
+	settings.Add("any",       false, "Any%");
+    settings.Add("any_dm",    false, "Any% (Drôle Menu)");
+    settings.Add("any_old",   false, "Any% (Old)");
 
     settings.CurrentDefaultParent = "boss";
 	settings.Add("cat1",         false,  "Defeat Cat 1");
@@ -47,6 +48,7 @@ startup {
 
     settings.CurrentDefaultParent = "event";
 	settings.Add("ketts",        true,  "Sleep at Kett's");
+	settings.Add("chocobo",      false,  "Get Chocobo");
     settings.Add("fuji glaive",  false,  "Save Fuji at Glaive Castle");
     settings.Add("chocobot",     true,  "Get Chocobot");
     settings.Add("recover mana", true,  "Recover Mana");
@@ -80,6 +82,7 @@ startup {
 
     settings.CurrentDefaultParent = "equipment";
     settings.Add("mattok",       false,  "Mattock");
+	settings.Add("battle",       false,  "Battle");
     settings.Add("bronze",       false,  "Bronze key");
     settings.Add("sickle",       false,  "Sickle");
     settings.Add("silver armor", false,  "Silver Armor");
@@ -87,14 +90,17 @@ startup {
     settings.Add("ice sword",    false,  "Ice sword");
     settings.Add("rusty sword",  false,  "Rusty sword");
     settings.Add("excalibur",    false,  "Excalibur");
+	
+	settings.CurrentDefaultParent = "any";
+	settings.Add("zip inside ice",    false,  "Zip in Ice Cavern");
 
-    settings.CurrentDefaultParent = "any";
+    settings.CurrentDefaultParent = "any_dm";
     settings.Add("zip ice",    false,  "Zip to Ice Cavern");
     settings.Add("zip mine", false,  "Zip to Silver Mine");
     settings.Add("drole menu",  false,  "Drôle Menu");
     settings.Add("flee julius 2",  false,  "Flee Julius 2");
 
-    settings.CurrentDefaultParent = "any_no_dm";
+    settings.CurrentDefaultParent = "any_old";
     settings.Add("axe shop",            false,  "Axe shop");
     settings.Add("zip ish",             false,  "Zip to Ish");
     settings.Add("snowmanless glaive",  false,  "Snowmanless to Glaive Castle");
@@ -177,6 +183,7 @@ startup {
             new MemoryWatcher<ushort>(new DeepPointer(wramOffset +  0x17BE)) { Name = "gold" },
             new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x1865)) { Name = "ketts sleep" },
 			new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x17A2)) { Name = "start" },
+			new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x17D1)) { Name = "chocobo_status" },
 
             // Magic
             new MemoryWatcher<byte>(new DeepPointer(wramOffset +  0x16AB)) { Name = "cure" },
@@ -402,6 +409,10 @@ startup {
                 vars.watchers["id_room_2"].Current == 0x30) 
             },
             { 
+                "chocobo", 
+                (vars.watchers["chocobo_status"].Current == 0x80)
+            },
+            { 
                 "fuji glaive", 
                 (vars.watchers["id_room_1"].Current == 0xF3 && 
                 vars.watchers["id_room_2"].Current == 0x72) 
@@ -557,6 +568,10 @@ startup {
                 (vars.HasItemValue(0xB6) == true) 
             },
             { 
+                "battle", 
+                (vars.HasEquipValue(0x08, 0x02) == true)
+            },
+            { 
                 "bronze", 
                 (vars.HasItemValue(0x19) == true) 
             },
@@ -584,8 +599,17 @@ startup {
                 "excalibur", 
                 (vars.HasEquipValue(0x55, 0x10) == true) 
             },
+			
+			// Any%
+            { 
+                "zip inside ice", 
+                (vars.previousid_room_1 == 0xA5 && 
+                vars.previousid_room_2 == 0x16 && 
+                vars.watchers["id_room_1"].Current == 0xC6 && 
+                vars.watchers["id_room_2"].Current == 0x26) 
+            },
 
-            // Any%
+            // Any (Drôle Menu)%
             { 
                 "zip ice", 
                 (vars.previousid_room_1 == 0xDD && 
@@ -620,7 +644,7 @@ startup {
                 )
             },
 
-            // Any% (no DM)
+            // Any% (Old)
             { 
                 "axe shop", 
                 (vars.previousid_room_1 == 0x10 && 
